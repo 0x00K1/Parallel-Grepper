@@ -1,0 +1,1156 @@
+\documentclass[12pt,a4paper]{article}
+
+% ============================================================
+% PACKAGE IMPORTS
+% ============================================================
+\usepackage{fvextra}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{setspace}  % For line spacing control
+\usepackage{tocloft}   % For table of contents formatting
+
+% ============================================================
+% COLOR DEFINITIONS
+% ============================================================
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{iaublue}{rgb}{0.0,0.3,0.6}
+
+% ============================================================
+% CODE LISTING STYLE
+% ============================================================
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    frame=single,
+    framesep=3pt,
+    xleftmargin=10pt,
+    xrightmargin=5pt
+}
+\lstset{style=mystyle}
+
+% ============================================================
+% HEADER AND FOOTER CONFIGURATION
+% ============================================================
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small ARTI503 - Parallel Computer Architecture}
+\fancyhead[R]{\small Group 3}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ============================================================
+% HYPERLINK CONFIGURATION
+% ============================================================
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Parallel Text Processing Project Proposal},
+    pdfauthor={Group 3 - IAU},
+    pdfsubject={Parallel Computer Architecture},
+    pdfkeywords={Parallel Computing, OpenMP, Text Processing, Word Frequency}
+}
+
+% ============================================================
+% SECTION TITLE FORMATTING
+% ============================================================
+\titleformat{\section}
+    {\normalfont\Large\bfseries\color{iaublue}}
+    {\thesection}{1em}{}
+    [\vspace{0.5ex}\titlerule]
+
+\titleformat{\subsection}
+    {\normalfont\large\bfseries}
+    {\thesubsection}{1em}{}
+
+\titleformat{\subsubsection}
+    {\normalfont\normalsize\bfseries}
+    {\thesubsubsection}{1em}{}
+
+% Spacing adjustments
+\titlespacing*{\section}{0pt}{12pt plus 4pt minus 2pt}{6pt plus 2pt minus 2pt}
+\titlespacing*{\subsection}{0pt}{10pt plus 4pt minus 2pt}{4pt plus 2pt minus 2pt}
+\titlespacing*{\subsubsection}{0pt}{8pt plus 4pt minus 2pt}{4pt plus 2pt minus 2pt}
+
+% Set line spacing
+\setstretch{1.15}
+
+% ============================================================
+% TABLE OF CONTENTS FORMATTING
+% ============================================================
+% Reduce spacing between TOC entries
+\setlength{\cftbeforesecskip}{2pt}
+\setlength{\cftbeforesubsecskip}{1pt}
+\setlength{\cftbeforesubsubsecskip}{0pt}
+
+% ============================================================
+% DOCUMENT BEGIN
+% ============================================================
+\begin{document}
+
+% ============================================================
+% TITLE PAGE
+% ============================================================
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+    
+    {\huge\bfseries Group3@IAU-ARTI503:\\[0.5cm]
+    Parallel Text Processing and\\[0.3cm]
+    Word Frequency Counter\\[3cm]}
+    
+    {\large
+    Abdullah Albattat\textsuperscript{1}, 
+    Hussain Alghubari\textsuperscript{1}, 
+    Muhannad Almahmoud\textsuperscript{1},\\[0.3cm]
+    Khalid Alghamdi\textsuperscript{1}, and 
+    Abdullah Aladwani\textsuperscript{1}\\[1.5cm]
+    
+    \textsuperscript{1}Imam Abdulrahman Bin Faisal University\\
+    College of Computer Science and Information Technology\\
+    Dammam, Saudi Arabia\\[2.5cm]
+    
+    ARTI503 - Parallel Computer Architecture\\[0.3cm]
+    October 19, 2025
+    }
+    
+    \vfill
+\end{titlepage}
+
+% ============================================================
+% TABLE OF CONTENTS
+% ============================================================
+\footnotesize  % Smaller font size for table of contents
+\setlength{\parskip}{0pt}  % Remove extra spacing between entries
+\begin{spacing}{0.9}  % Reduce line spacing for TOC
+\tableofcontents
+\end{spacing}
+\normalsize  % Restore normal font size
+\setstretch{1.15}  % Restore normal line spacing
+\newpage
+
+% ============================================================
+\section{Introduction}
+% ============================================================
+
+\subsection{Objective and Purpose}
+
+\subsubsection{Problem Statement}
+
+In the era of big data and digitalization, text processing has become a fundamental computational task across many domains like:
+
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+    \item \textbf{Search Engines:} Indexing billions of web pages
+    
+    \item \textbf{Social Media Analytics:} Processing real-time streams of user-generated content
+    
+    \item \textbf{Natural Language Processing:} Processing large corpora for machine learning models
+    
+    \item \textbf{Document Management Systems:} Managing and analyzing enterprise documents
+    
+    \item \textbf{Log Analysis:} Processing server and application logs for monitoring
+\end{itemize}
+
+\vspace{0.5cm}
+
+Conventional sequential text-processing algorithms are severely limited for processing large-scale data. As file sizes increase from megabytes to gigabytes, single-threaded methods turn into major bottlenecks, leading to:
+
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+    \item Unacceptable processing latency
+    
+    \item Underutilization of modern multi-core processors
+    
+    \item Poor scalability for growing data volumes
+    
+    \item Inability to meet real-time processing requirements
+\end{itemize}
+
+\newpage
+\subsubsection{Project Purpose}
+
+The primary purpose of this project is to \textbf{design, implement, and evaluate} a parallel word frequency counter that leverages multi-core processors to dramatically improve the performance of text processing.
+
+\vspace{0.3cm}
+\noindent\textbf{Specific Objectives:}
+
+\begin{enumerate}[leftmargin=*, itemsep=6pt]
+    \item \textbf{Implement Sequential Baseline:} Create a sequential word counter to establish performance baselines
+    
+    \item \textbf{Develop Parallel Solution:} Develop an OpenMP-based parallel solution through shared-memory programming
+    
+    \item \textbf{Performance Analysis:} Measure and compare execution time, speedup, and efficiency across different configurations
+    
+    \item \textbf{Scalability Study:} Evaluate how performance scales with:
+        \begin{itemize}[itemsep=2pt]
+            \item Dataset size (10 MB to 100+ MB)
+            \item Thread count (2, 4, 8, 16 threads)
+        \end{itemize}
+    
+    \item \textbf{Optimization:} Identify and minimize synchronization overhead and load imbalance
+    
+    \item \textbf{Real-World Application:} Demonstrate practical benefits of parallelization in text analytics
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\subsubsection{Why This Problem Matters for Parallel Computing}
+
+Word frequency counting is an ideal candidate for parallel computing education and research because:
+
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+    \item \textbf{Computational Intensity:} Processing large text files involves millions of operations
+    
+    \item \textbf{Data Independence:} Text chunks can be processed independently
+    
+    \item \textbf{Clear Metrics:} Speedup and efficiency are easily measurable
+    
+    \item \textbf{Real-World Relevance:} Directly applicable to industry problems
+    
+    \item \textbf{Educational Value:} Demonstrates key parallel computing concepts (synchronization, load balancing, Amdahl's Law)
+\end{itemize}
+
+\newpage
+
+\subsection{Code Selection and Justification}
+
+\subsubsection{Why We Selected This Problem}
+
+We selected the word frequency counter problem for parallelization because it exhibits \textbf{ideal characteristics} for demonstrating parallel computing principles:
+
+\noindent\textbf{1. Computational Intensity:}
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item Processing large text files (50-100 MB) involves \textbf{tens of millions of operations}
+    \item Each word requires: reading, tokenization, normalization, and hash map insertion
+    \item Sequential processing can take several seconds to minutes for large datasets
+\end{itemize}
+
+\vspace{0.4cm}
+\noindent\textbf{2. Existence of Parallelizable Loops:}
+
+The core algorithm contains \textbf{highly parallelizable loops}:
+
+\begin{lstlisting}[language=C++, caption={Sequential Word Counting Loop - Main Bottleneck}]
+// Main processing loop - SEQUENTIAL BOTTLENECK
+while (file >> word) {
+    // Step 1: Normalize word (lowercase, remove punctuation)
+    normalized_word = normalize(word);  // CPU-intensive
+    
+    // Step 2: Update frequency map
+    wordFreq[normalized_word]++;        // Hash map operation
+    
+    totalWords++;
+}
+\end{lstlisting}
+
+This loop is executed \textbf{millions of times} and dominates execution time, making it the prime target for parallelization.
+
+\vspace{0.4cm}
+\noindent\textbf{3. Data Independence:}
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item Text can be divided into independent chunks
+    \item Each chunk can be processed in parallel without dependencies
+    \item Only the final merge step requires synchronization
+\end{itemize}
+
+\newpage
+\vspace{0.4cm}
+\noindent\textbf{4. Multiple Parallelization Opportunities:}
+
+\begin{table}[h]
+\centering
+\caption{Parallelization Opportunities in Word Frequency Counter}
+\small
+\begin{tabular}{|p{2.8cm}|p{4.8cm}|p{4.8cm}|}
+\hline
+\textbf{Component} & \textbf{Sequential Operation} & \textbf{Parallel Strategy} \\
+\hline
+File Reading & Read entire file sequentially & Divide into chunks, parallel read \\
+\hline
+Tokenization & Process words one-by-one & Each thread processes its chunk \\
+\hline
+Word Normalization & Sequential character processing & Independent per word \\
+\hline
+Frequency Counting & Single global hash map & Thread-local maps + merge \\
+\hline
+Result Sorting & Sequential sort & Parallel sort (if needed) \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\textbf{5. Presence of Different Data Types:}
+
+The code involves multiple data types suitable for parallel processing:
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item \texttt{std::string}: Text data requiring character-level operations
+    \item \texttt{std::unordered\_map<string, unsigned long long>}: Hash table for frequency storage
+    \item \texttt{unsigned long long}: Large integer counters
+    \item \texttt{std::vector}: Dynamic arrays for storing results
+\end{itemize}
+
+\vspace{0.4cm}
+\noindent\textbf{6. Conditional Operations:}
+
+The algorithm includes if-conditions that benefit from parallel evaluation:
+\begin{lstlisting}[language=C++, caption={Conditional Logic in Word Processing}]
+// Multiple conditional checks per word
+if (isalpha(c)) {  // Character validation
+    normalized += tolower(c);
+}
+
+if (!normalized.empty()) {  // Empty word filtering
+    wordFreq[normalized]++;
+}
+
+// Frequency threshold filtering
+if (frequency > MIN_THRESHOLD) {
+    results.push_back({word, frequency});
+}
+\end{lstlisting}
+
+\newpage
+\subsubsection{Suitability for OpenMP Parallelization}
+
+OpenMP is \textbf{ideally suited} for this problem because:
+
+\vspace{0.3cm}
+\noindent\textbf{1. Shared-Memory Model:}
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item Text data can be shared across threads
+    \item Reduces memory overhead compared to distributed systems
+    \item Efficient for single-machine processing
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{2. Parallel Directives:}
+
+OpenMP provides directives perfect for our use case:
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item \texttt{\#pragma omp parallel for}: Parallelize word processing loops
+    \item \texttt{\#pragma omp critical}: Protect hash map updates
+    \item \texttt{\#pragma omp reduction}: Combine thread-local results
+    \item \texttt{\#pragma omp sections}: Parallel task distribution
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{3. Scheduling Options:}
+
+Test different scheduling strategies:
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item \texttt{static}: Equal chunk distribution
+    \item \texttt{dynamic}: Load balancing for uneven workloads
+    \item \texttt{guided}: Adaptive chunk sizing
+\end{itemize}
+
+\subsubsection{Computational Complexity Analysis}
+
+\noindent\textbf{Time Complexity:}
+
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+    \item \textbf{Sequential:} $O(n)$ where $n$ is the number of tokens (words).
+    
+    \item \textbf{Parallel (with $p$ threads):} $O\!\left(\frac{n}{p}\right) + O\!\left(U \log p\right)$
+        \begin{itemize}[itemsep=2pt]
+            \item $\frac{n}{p}$: Per-thread parsing, tokenization, normalization, and local counting.
+            \item $U \log p$: Tree-style merge of $p$ thread-local frequency maps, where $U$ is the total number of distinct words.
+        \end{itemize}
+\end{itemize}
+
+\vspace{0.3cm}
+
+\noindent\textit{Note:} Using a single global hash map with locks can introduce heavy contention and degrade performance; the thread-local + merge strategy above minimizes this. If sorted output is required, add an extra $O(U \log U)$ post-processing term.
+
+\newpage
+\vspace{0.4cm}
+\noindent\textbf{Expected Speedup:}
+
+According to \textbf{Amdahl's Law}:
+
+\begin{equation}
+    S(p) = \frac{1}{(1-P) + \frac{P}{p}}
+\end{equation}
+
+\noindent where $P$ is the parallelizable fraction of the workload and $p$ is the number of processors/threads.
+
+\subsubsection{Code Origin}
+
+\noindent\textbf{Original Implementation:}
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item The sequential code is \textbf{originally developed} by our team for this project
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{References and Inspiration:}
+
+\begin{enumerate}[leftmargin=*, itemsep=3pt]
+    \item OpenMP official documentation and tutorials: \url{https://www.openmp.org/}
+    \item Chapman, Barbara, et al. \textit{Using OpenMP: Portable Shared Memory Parallel Programming}. MIT Press, 2007.
+    \item Course materials from ARTI503 - Parallel Computer Architecture
+\end{enumerate}
+
+\vspace{0.3cm}
+\noindent\textbf{GitHub Repository:}
+
+All code will be published at: \url{https://github.com/0x00K1/Parallel-Grepper}
+
+\newpage
+% ============================================================
+\section{Sequential Benchmarking}
+% ============================================================
+
+\subsection{Benchmarking Methodology}
+
+\subsubsection{Measurement Tools and Techniques}
+
+To establish a reliable baseline for performance comparison, we implemented a comprehensive benchmarking framework using the following tools and methodologies:
+
+\vspace{0.3cm}
+\noindent\textbf{1. Time Measurement in C++ (High-Precision Timing):}
+
+\begin{lstlisting}[language=C++, caption={High-Resolution Timer Implementation}]
+#include <chrono>
+
+// Start timing
+auto startTime = std::chrono::high_resolution_clock::now();
+
+// Execute word counting algorithm
+WordMap wordFreq = countWordsFromFile(filename);
+
+// End timing
+auto endTime = std::chrono::high_resolution_clock::now();
+
+// Calculate execution time in milliseconds
+executionTime = std::chrono::duration<double, std::milli>(
+    endTime - startTime
+).count();
+\end{lstlisting}
+
+\noindent\textbf{Key Features:}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+    \item \texttt{std::chrono::high\_resolution\_clock}: Provides microsecond-level precision
+    \item Measures wall-clock time including I/O operations
+    \item Minimal overhead from timing instrumentation
+\end{itemize}
+
+\vspace{0.4cm}
+\noindent\textbf{2. Python Benchmarking Suite:}
+
+We developed an automated benchmarking script (\texttt{run\_benchmarks.py}) that:
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item Executes multiple runs (5 iterations per dataset) for statistical reliability
+    \item Collects execution times through Python's \texttt{time.perf\_counter()}
+    \item Calculates mean, median, standard deviation, min, and max times
+    \item Outputs results in JSON, CSV, and formatted text formats
+    \item Ensures consistent system state between runs
+\end{itemize}
+
+\newpage
+\subsubsection{Test Environment Specifications}
+
+\begin{table}[h]
+\centering
+\caption{Hardware and Software Configuration}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Component} & \textbf{Specification} \\
+\hline
+Operating System & Windows 11 (64-bit) \\
+\hline
+Compiler & GCC 15.2.0 (MinGW-w64 POSIX UCRT) \\
+\hline
+Optimization Level & -O3 (Maximum optimization) \\
+\hline
+C++ Standard & C++17 \\
+\hline
+Python Version & Python 3.x \\
+\hline
+Benchmark Runs & 5 iterations per dataset \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Dataset Specifications}
+
+We generated synthetic datasets with controlled characteristics to test scalability:
+
+\begin{table}[h]
+\centering
+\caption{Test Dataset Specifications}
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Dataset} & \textbf{File Size} & \textbf{Total Words} & \textbf{Unique Words} \\
+\hline
+test\_10mb.txt & 10.06 MB & 1,854,066 & 140 \\
+\hline
+test\_25mb.txt & 25.15 MB & 4,635,262 & 140 \\
+\hline
+test\_50mb.txt & 50.29 MB & 9,270,623 & 140 \\
+\hline
+test\_100mb.txt & 100.59 MB & 18,538,135 & 140 \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Dataset Characteristics:}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+    \item Vocabulary size: Fixed at 140 unique words
+    \item Word distribution: Zipf's law distribution (realistic text patterns)
+    \item File sizes: 10×, 2.5×, 2×, and 2× scaling factors
+    \item Purpose: Test linear scalability and identify bottlenecks
+\end{itemize}
+
+\newpage
+\subsection{Performance Results}
+
+\subsubsection{Execution Time Analysis}
+
+The sequential word counter was benchmarked across all test datasets with 5 runs per dataset to ensure statistical reliability.
+
+\begin{table}[h]
+\centering
+\caption{Sequential Performance Metrics}
+\small
+\begin{tabular}{|l|r|r|r|r|}
+\hline
+\textbf{Dataset} & \textbf{Mean Time (ms)} & \textbf{Std Dev (ms)} & \textbf{Min (ms)} & \textbf{Max (ms)} \\
+\hline
+test\_10mb.txt & 275.60 & 11.07 & 260.96 & 286.84 \\
+\hline
+test\_25mb.txt & 641.84 & 6.00 & 634.76 & 650.77 \\
+\hline
+test\_50mb.txt & 1,271.00 & 16.86 & 1,254.13 & 1,293.80 \\
+\hline
+test\_100mb.txt & 2,607.80 & 87.32 & 2,510.31 & 2,738.18 \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Key Observations:}
+
+\begin{enumerate}[leftmargin=*, itemsep=3pt]
+    \item \textbf{Linear Scaling:} Execution time scales linearly with file size
+        \begin{itemize}[itemsep=2pt]
+            \item 10 MB → 25 MB (2.5× size): 2.33× time increase
+            \item 25 MB → 50 MB (2.0× size): 1.98× time increase
+            \item 50 MB → 100 MB (2.0× size): 2.05× time increase
+        \end{itemize}
+    
+    \item \textbf{Low Variance:} Standard deviation is consistently low (2.3\%-4.0\% of mean)
+        \begin{itemize}[itemsep=2pt]
+            \item Indicates stable, predictable performance
+            \item Minimal impact from system background processes
+        \end{itemize}
+    
+    \item \textbf{Consistent Performance:} The algorithm exhibits $O(n)$ complexity as expected
+\end{enumerate}
+
+\subsubsection{Throughput Analysis}
+
+\begin{table}[h]
+\centering
+\caption{Processing Throughput Metrics}
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Dataset} & \textbf{Throughput (MB/s)} & \textbf{Words/Second} & \textbf{Efficiency} \\
+\hline
+test\_10mb.txt & 36.50 & 6,727,403 & Baseline \\
+\hline
+test\_25mb.txt & 39.18 & 7,221,788 & +7.3\% \\
+\hline
+test\_50mb.txt & 39.57 & 7,293,975 & +8.4\% \\
+\hline
+test\_100mb.txt & 38.57 & 7,108,728 & +5.7\% \\
+\hline
+\textbf{Average} & \textbf{38.46} & \textbf{7,087,974} & --- \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Analysis:}
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item \textbf{Stable Throughput:} Consistent \textasciitilde38 MB/s across all dataset sizes
+    \item \textbf{Slight Performance Gain:} Larger files show marginally better throughput
+        \begin{itemize}[itemsep=2pt]
+            \item Reason: Better cache utilization and amortized I/O overhead
+            \item Effect: 5-8\% improvement from 10 MB to 50-100 MB files
+        \end{itemize}
+    \item \textbf{Word Processing Rate:} Consistently processes \textasciitilde7 million words per second
+\end{itemize}
+
+\subsubsection{Performance Visualization}
+
+Figure~\ref{fig:performance_analysis} presents a comprehensive visualization of the sequential word counter's performance characteristics across four key dimensions:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{performance_analysis.png}
+\caption{Sequential Word Counter Performance Analysis: (Top-Left) Execution time vs file size showing linear scaling with standard deviation bands; (Top-Right) Processing throughput in MB/s demonstrating consistent performance; (Bottom-Left) Word processing rate showing \textasciitilde7 million words/second capability; (Bottom-Right) Execution time with error bars indicating measurement reliability.}
+\label{fig:performance_analysis}
+\end{figure}
+
+\newpage
+\noindent\textbf{Figure Interpretation:}
+
+\begin{enumerate}[leftmargin=*, itemsep=3pt]
+    \item \textbf{Top-Left (Execution Time vs File Size):}
+        \begin{itemize}[itemsep=2pt]
+            \item Shows clear linear relationship between file size and execution time
+            \item Shaded region represents ±1 standard deviation
+            \item Narrow bands indicate high measurement consistency
+            \item Confirms $O(n)$ algorithmic complexity
+        \end{itemize}
+    
+    \item \textbf{Top-Right (Processing Throughput):}
+        \begin{itemize}[itemsep=2pt]
+            \item Demonstrates stable throughput across all dataset sizes
+            \item Average throughput: 38.46 MB/s
+            \item Slight improvement with larger files due to cache effects
+            \item No performance degradation with increasing file size
+        \end{itemize}
+    
+    \item \textbf{Bottom-Left (Word Processing Rate):}
+        \begin{itemize}[itemsep=2pt]
+            \item Consistent processing rate of \textasciitilde7 million words/second
+            \item Validates throughput measurements
+            \item Shows excellent performance consistency
+            \item Indicates efficient word tokenization and counting
+        \end{itemize}
+    
+    \item \textbf{Bottom-Right (Execution Time with Error Bars):}
+        \begin{itemize}[itemsep=2pt]
+            \item Error bars represent standard deviation (5 runs per dataset)
+            \item Small error bars indicate reliable measurements
+            \item Minimal variance across all dataset sizes
+            \item Confirms repeatability and stability of benchmarks
+        \end{itemize}
+\end{enumerate}
+
+\vspace{0.3cm}
+\noindent\textbf{Key Insights from Visualization:}
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item \textbf{Predictable Performance:} Linear scaling enables accurate time estimation for larger datasets
+    \item \textbf{No Bottleneck Saturation:} Throughput remains stable, indicating no system-level bottlenecks
+    \item \textbf{Measurement Reliability:} Low variance confirms benchmarking methodology validity
+    \item \textbf{Optimization Potential:} Consistent behavior across scales suggests parallelization will be effective
+\end{itemize}
+
+\newpage
+\subsection{Bottleneck Identification}
+
+\subsubsection{Profiling Analysis}
+
+Through detailed code analysis and execution time breakdown, we identified the following performance bottlenecks:
+
+\vspace{0.3cm}
+\noindent\textbf{1. File I/O Operations (Estimated: 25-30\% of execution time)}
+
+\begin{lstlisting}[language=C++, caption={Sequential File Reading - First Major Bottleneck}]
+std::ifstream file(filename);
+
+// Sequential read - blocks until data available
+while (file >> word) {  // I/O BOTTLENECK
+    // Processing happens here
+}
+\end{lstlisting}
+
+\noindent\textbf{Bottleneck Characteristics:}
+\begin{itemize}[leftmargin=*, itemsep=0pt]
+    \item Single-threaded disk I/O
+    \item Stream extraction operator (\texttt{>>}) performs buffered reads
+    \item Limited by disk read speed and buffer size
+    \item Cannot proceed to next word until current read completes
+\end{itemize}
+
+\newpage
+\vspace{0.4cm}
+\noindent\textbf{2. String Processing and Normalization (Estimated: 40-45\% of execution time)}
+
+\begin{lstlisting}[language=C++, caption={Word Normalization - Primary Computational Bottleneck}]
+std::string WordCounterSequential::normalizeWord(const std::string& word) {
+    std::string normalized;
+    normalized.reserve(word.length());
+    
+    // CHARACTER-BY-CHARACTER PROCESSING - MAIN BOTTLENECK
+    for (char c : word) {
+        if (std::isalpha(static_cast<unsigned char>(c))) {
+            normalized += std::tolower(static_cast<unsigned char>(c));
+        }
+    }
+    
+    return normalized;
+}
+\end{lstlisting}
+
+\noindent\textbf{Bottleneck Characteristics:}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+    \item Called once per word (18.5 million times for 100 MB file)
+    \item Character-by-character validation and transformation
+    \item Multiple function calls per character (\texttt{isalpha}, \texttt{tolower})
+    \item String concatenation overhead
+    \item \textbf{This is the most computationally intensive section}
+\end{itemize}
+
+\newpage
+\noindent\textbf{3. Hash Map Operations (Estimated: 20-25\% of execution time)}
+
+\begin{lstlisting}[language=C++, caption={Frequency Map Updates - Synchronization Bottleneck}]
+WordMap wordFreq;  // std::unordered_map<std::string, unsigned long long>
+
+while (file >> word) {
+    std::string normalized = normalizeWord(word);
+    
+    if (!normalized.empty()) {
+        wordFreq[normalized]++;  // HASH MAP BOTTLENECK
+        totalWords++;
+    }
+}
+\end{lstlisting}
+
+\noindent\textbf{Bottleneck Characteristics:}
+\begin{itemize}[leftmargin=*, itemsep=0pt]
+    \item Hash computation for each word lookup
+    \item Potential hash collisions (though minimal with 140 unique words)
+    \item Memory allocation for new entries
+    \item Cache misses due to random memory access patterns
+    \item \textbf{Critical section in parallel version - requires synchronization}
+\end{itemize}
+
+\vspace{0.4cm}
+\noindent\textbf{4. Result Sorting (Estimated: 5-10\% of execution time)}
+
+\begin{lstlisting}[language=C++, caption={Top Words Sorting - Post-Processing Overhead}]
+std::vector<std::pair<std::string, unsigned long long>> 
+WordCounterSequential::getTopWords(const WordMap& wordMap, int n) {
+    // Convert map to vector
+    std::vector<std::pair<std::string, unsigned long long>> wordVec(
+        wordMap.begin(), wordMap.end()
+    );
+    
+    // Sort by frequency (descending) - O(U log U)
+    std::sort(wordVec.begin(), wordVec.end(),
+        [](const auto& a, const auto& b) {
+            return a.second > b.second;  // SORTING OVERHEAD
+        }
+    );
+    
+    return wordVec;
+}
+\end{lstlisting}
+
+\noindent\textbf{Bottleneck Characteristics:}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+    \item $O(U \log U)$ complexity where $U$ = unique words (140)
+    \item Minimal impact due to small vocabulary size
+    \item Would become significant with larger vocabularies (10K+ unique words)
+\end{itemize}
+
+\newpage
+\subsubsection{Execution Time Breakdown}
+
+Based on profiling analysis, we estimate the following time distribution for the sequential implementation:
+
+\begin{table}[h]
+\centering
+\caption{Estimated Execution Time Breakdown (100 MB Dataset)}
+\begin{tabular}{|l|r|r|p{6cm}|}
+\hline
+\textbf{Operation} & \textbf{Time (ms)} & \textbf{Percentage} & \textbf{Parallelizable?} \\
+\hline
+String Normalization & 1,043-1,173 & 40-45\% & \textcolor{green}{\textbf{YES}} - Independent per word \\
+\hline
+File I/O & 652-782 & 25-30\% & \textcolor{orange}{\textbf{PARTIAL}} - Can chunk file \\
+\hline
+Hash Map Updates & 521-652 & 20-25\% & \textcolor{orange}{\textbf{PARTIAL}} - Needs synchronization \\
+\hline
+Sorting \& Output & 130-261 & 5-10\% & \textcolor{green}{\textbf{YES}} - Parallel sort possible \\
+\hline
+\textbf{Total} & \textbf{2,608} & \textbf{100\%} & --- \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Parallelization Strategy Based on Bottlenecks:}
+
+\begin{enumerate}[leftmargin=*, itemsep=4pt]
+    \item \textbf{Target: String Normalization (40-45\%)}
+        \begin{itemize}[itemsep=2pt]
+            \item \textcolor{green}{\textbf{HIGH PRIORITY}} - Largest bottleneck
+            \item Strategy: Each thread processes independent text chunks
+            \item Expected speedup: Near-linear with thread count
+        \end{itemize}
+    
+    \item \textbf{Target: File I/O (25-30\%)}
+        \begin{itemize}[itemsep=2pt]
+            \item \textcolor{orange}{\textbf{MEDIUM PRIORITY}} - Can be partially parallelized
+            \item Strategy: Memory-map file and divide into chunks
+            \item Expected speedup: Limited by disk bandwidth
+        \end{itemize}
+    
+    \item \textbf{Target: Hash Map Updates (20-25\%)}
+        \begin{itemize}[itemsep=2pt]
+            \item \textcolor{red}{\textbf{CRITICAL SECTION}} - Requires careful synchronization
+            \item Strategy: Thread-local hash maps + final merge
+            \item Expected speedup: Good, but merge adds overhead
+        \end{itemize}
+    
+    \item \textbf{Target: Sorting (5-10\%)}
+        \begin{itemize}[itemsep=2pt]
+            \item \textcolor{blue}{\textbf{LOW PRIORITY}} - Minimal impact
+            \item Strategy: Use \texttt{std::sort} with execution policy (C++17)
+            \item Expected speedup: Marginal benefit
+        \end{itemize}
+\end{enumerate}
+
+\newpage
+\subsection{Scalability Analysis}
+
+\subsubsection{Linear Scaling Verification}
+
+To verify the expected $O(n)$ time complexity, we analyzed the relationship between file size and execution time:
+
+\begin{table}[h]
+\centering
+\caption{Scalability Metrics}
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Size Increase} & \textbf{Time Increase} & \textbf{Scaling Efficiency} & \textbf{Assessment} \\
+\hline
+10 MB → 25 MB (2.5×) & 2.33× & 93.2\% & Excellent \\
+\hline
+25 MB → 50 MB (2.0×) & 1.98× & 99.0\% & Excellent \\
+\hline
+50 MB → 100 MB (2.0×) & 2.05× & 97.5\% & Excellent \\
+\hline
+10 MB → 100 MB (10.0×) & 9.46× & 94.6\% & Excellent \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Conclusion:} The sequential implementation demonstrates \textbf{excellent linear scaling} with an average efficiency of 94.6\% across all dataset sizes.
+
+\subsubsection{Performance Baseline Summary}
+
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+    \item \textbf{Baseline Performance (100 MB):} 2,607.80 ms (2.61 seconds)
+    \item \textbf{Processing Rate:} 38.57 MB/s or 7.1 million words/second
+    \item \textbf{Scalability:} Linear $O(n)$ with 94.6\% efficiency
+    \item \textbf{Primary Bottleneck:} String normalization (40-45\% of time)
+    \item \textbf{Parallelization Potential:} 85-90\% of code is parallelizable
+\end{itemize}
+
+\vspace{0.5cm}
+\noindent\textbf{Expected Parallel Performance (Theoretical):}
+
+Using \textbf{Amdahl's Law} with $P = 0.85$ (85\% parallelizable):
+
+\begin{equation}
+S(p) = \frac{1}{(1-P) + \frac{P}{p}} = \frac{1}{0.15 + \frac{0.85}{p}}
+\end{equation}
+
+\begin{table}[h]
+\centering
+\caption{Theoretical Speedup Predictions}
+\small
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Threads} & \textbf{Speedup} & \textbf{Time (100 MB)} & \textbf{Improvement} \\
+\hline
+1 (Sequential) & 1.00× & 2,607.80 ms & --- \\
+\hline
+2 & 1.77× & 1,473 ms & 43.5\% faster \\
+\hline
+4 & 3.08× & 847 ms & 67.5\% faster \\
+\hline
+8 & 4.71× & 554 ms & 78.8\% faster \\
+\hline
+16 & 5.93× & 440 ms & 83.1\% faster \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent These predictions will be validated in the next stage through parallel implementation and benchmarking.
+
+\newpage
+% ============================================================
+\section{Template Usage and Documentation}
+% ============================================================
+
+\subsection{Template Completion}
+
+\subsubsection{Sections Completed}
+
+All required sections have been completed in this LaTeX template:
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Introduction (Section 1):}
+    \begin{itemize}
+        \item Objective and Purpose (1.1)
+        \item Code Selection and Justification (1.2)
+    \end{itemize}
+    
+    \item \textbf{Sequential Benchmarking (Section 2):}
+    \begin{itemize}
+        \item Benchmarking Methodology (2.1)
+        \item Performance Results (2.2)
+        \item Bottleneck Identification (2.3)
+        \item Scalability Analysis (2.4)
+    \end{itemize}
+    
+    \item \textbf{Template Usage and Documentation (Section 3):}
+    \begin{itemize}
+        \item Template Completion (3.1)
+        \item Code Visualization and Repository (3.2)
+        \item Document Formatting and Compilation (3.3)
+        \item Planned Parallel Implementation Strategies (3.4)
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Incomplete Sections (To Be Completed in Future Stages)}
+
+The following sections are planned for completion in subsequent project phases:
+
+\textcolor{red}{\textbf{Stage 2: Literature Review and Feedback Application}}
+
+\textcolor{red}{\textbf{Stage 3: Code Implementation and Parallelization}}
+
+\newpage
+\subsection{Code Visualization and Repository}
+
+\subsubsection{Project Structure}
+
+Instead of screenshots, we provide a \textbf{live GitHub repository} with complete source code:
+
+\begin{center}
+\Large\textbf{GitHub Repository:} \\
+\url{https://github.com/0x00K1/Parallel-Grepper}
+\end{center}
+
+\textbf{Repository Structure:}
+\begin{verbatim}
+Parallel-Grepper/
+|-- docs/                         # Documentation and proposal
+|-- src/
+|   |-- sequential/               # Sequential implementation
+|   +-- parallel/                 # Parallel implementation (OpenMP)
+|-- benchmarks/                   # Benchmarking scripts and results
+|-- data/                         # Test datasets (10MB to 100MB+)
+|-- scripts/                      # Utility scripts
++-- results/                      # Output word frequency results
+\end{verbatim}
+
+\subsubsection{Code Access Methods}
+
+\textbf{Method 1: Direct File Links}
+\begin{itemize}[leftmargin=*]
+    \item Sequential Header: \\
+    \small\url{https://github.com/0x00K1/Parallel-Grepper/blob/main/src/sequential/word_counter_sequential.h}
+    \item Sequential Implementation: \\
+    \small\url{https://github.com/0x00K1/Parallel-Grepper/blob/main/src/sequential/word_counter_sequential.cpp}
+    \item Benchmark Suite: \\
+    \small\url{https://github.com/0x00K1/Parallel-Grepper/blob/main/benchmarks/run_benchmarks.py}
+\end{itemize}
+
+\newpage
+\textbf{Method 2: Clone Repository}
+\begin{lstlisting}[language=bash, caption={Clone and Build Instructions}]
+# Clone repository
+git clone https://github.com/0x00K1/Parallel-Grepper.git
+cd Parallel-Grepper
+
+# Build sequential version
+mkdir build
+g++ -std=c++17 -O3 -o build/sequential_counter \
+    src/sequential/word_counter_sequential.cpp \
+    src/sequential/main.cpp
+
+# Generate test datasets
+python benchmarks/generate_dataset.py
+
+# Run benchmarks
+python benchmarks/run_benchmarks.py
+
+# Analyze results
+python benchmarks/analyze_results.py
+\end{lstlisting}
+
+\subsubsection{Code Functionality Explanation}
+
+\noindent\textbf{1. Sequential Word Counter Class:}
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item \textbf{Purpose:} Process text files and count word frequencies
+    \item \textbf{Input:} Text file path or string content
+    \item \textbf{Output:} Hash map of word frequencies
+    \item \textbf{Key Methods:}
+        \begin{itemize}[itemsep=2pt]
+            \item \texttt{countWordsFromFile()}: Process file and return frequency map
+            \item \texttt{normalizeWord()}: Convert to lowercase, remove punctuation
+            \item \texttt{getTopWords()}: Extract most frequent words
+            \item \texttt{saveResults()}: Export results to file
+        \end{itemize}
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{2. Benchmarking Infrastructure:}
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item \textbf{Dataset Generator:} Creates realistic text files with Zipf-like word distribution
+    \item \textbf{Benchmark Runner:} Executes multiple runs, collects statistics
+    \item \textbf{Performance Analyzer:} Generates graphs and summary reports
+\end{itemize}
+
+\newpage
+
+\noindent\textbf{3. Workflow:}
+
+\begin{enumerate}[leftmargin=*, itemsep=4pt]
+    \item Generate test datasets (10MB - 100MB)
+    \item Compile sequential version with optimizations
+    \item Run 5 iterations per dataset
+    \item Collect timing statistics (mean, median, std dev)
+    \item Analyze bottlenecks and identify parallelization targets
+    \item Generate performance visualizations
+\end{enumerate}
+
+\subsection{Document Formatting and Compilation}
+
+\subsubsection{LaTeX Formatting and Compilation}
+
+This document is written in \textbf{LaTeX} using Overleaf.
+
+\subsection{Planned Parallel Implementation Strategies}
+
+\textbf{Strategy 1: Chunk-Based Parallelization}
+\begin{lstlisting}[language=C++, caption={Planned OpenMP Implementation}]
+#pragma omp parallel
+{
+    unordered_map<string, ull> localMap;
+    
+    #pragma omp for schedule(dynamic)
+    for (int i = 0; i < chunks.size(); i++) {
+        // Each thread processes its chunk
+        processChunk(chunks[i], localMap);
+    }
+    
+    // Merge phase (synchronized)
+    #pragma omp critical
+    {
+        mergeMap(globalMap, localMap);
+    }
+}
+\end{lstlisting}
+
+\vspace{0.5cm}
+\noindent\textbf{Strategy 2: Thread-Local Storage}
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+    \item Each thread maintains private hash map
+    \item No synchronization during processing
+    \item Final merge step combines results
+    \item Minimizes contention and false sharing
+\end{itemize}
+
+% ============================================================
+\section{References}
+% ============================================================
+
+\begin{enumerate}[leftmargin=*]
+    \item OpenMP Architecture Review Board. \textit{OpenMP Application Programming Interface Version 5.2}. November 2021. \url{https://www.openmp.org/specifications/}
+    
+    \item Chapman, Barbara, Gabriele Jost, and Ruud van der Pas. \textit{Using OpenMP: Portable Shared Memory Parallel Programming}. MIT Press, 2007.
+    
+    \item Herlihy, Maurice, and Nir Shavit. \textit{The Art of Multiprocessor Programming}. Morgan Kaufmann, 2012.
+    
+    \item Pacheco, Peter. \textit{An Introduction to Parallel Programming}. Morgan Kaufmann, 2011.
+    
+    \item Dr. Yasir Alguwaifli. \textit{ARTI503 Course Materials - Parallel Computer Architecture}. IAU, 2025.
+    
+    \item Amazon Web Services. \textit{AWS Cloud Credits for Research}. \url{https://aws.amazon.com/research-credits/}
+\end{enumerate}
+
+\newpage
+% ============================================================
+\section{Appendix}
+% ============================================================
+
+\subsection{Appendix A: Build and Run Instructions}
+
+\textbf{Compilation Commands:}
+\begin{lstlisting}[language=bash, caption={Complete Build Instructions}]
+# Create build directory
+mkdir -p build results/sequential
+
+# Compile sequential version (Linux/macOS)
+g++ -std=c++17 -O3 -march=native \
+    -o build/sequential_counter \
+    src/sequential/word_counter_sequential.cpp \
+    src/sequential/main.cpp
+
+# Compile sequential version (Windows with MinGW)
+g++ -std=c++17 -O3 ^
+    -o build/sequential_counter.exe ^
+    src/sequential/word_counter_sequential.cpp ^
+    src/sequential/main.cpp
+
+# Run on sample file
+./build/sequential_counter data/test_10mb.txt
+\end{lstlisting}
+
+\subsection{Appendix B: Performance Metrics Definitions}
+
+\noindent\textbf{Key Performance Indicators:}
+
+\begin{enumerate}[leftmargin=*, itemsep=8pt]
+    \item \textbf{Speedup:}
+        \[S(p) = \frac{T_{\text{sequential}}}{T_{\text{parallel}}(p)}\]
+    
+    \item \textbf{Efficiency:}
+        \[E(p) = \frac{S(p)}{p} \times 100\%\]
+    
+    \item \textbf{Throughput:}
+        \[\text{Throughput} = \frac{\text{Data Size (MB)}}{\text{Execution Time (seconds)}}\]
+    
+    \item \textbf{Scalability:}
+        \[\text{Scalability} = \frac{S(2p)}{S(p)}\]
+\end{enumerate}
+
+\end{document}

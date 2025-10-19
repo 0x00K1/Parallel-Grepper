@@ -1,0 +1,56 @@
+# Build directories
+build/
+bin/
+obj/
+
+# Compiled executables
+*.exe
+*.out
+*.app
+sequential_counter
+parallel_counter
+
+# Data files (large test files)
+data/*.txt
+!data/sample.txt
+
+# Benchmark results (exclude to avoid large commits)
+benchmarks/results/*.csv
+benchmarks/results/*.json
+benchmarks/results/*.png
+benchmarks/results/*.txt
+!benchmarks/results/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.pdf
+*.synctex.gz
+
+# Results
+results/sequential/*.txt
+results/parallel/*.txt
+!results/.gitkeep
