@@ -155,7 +155,48 @@ python benchmarks/analyze_results.py
 
 ## Building Parallel Version
 
-> **Status:** Coming Soon
+#### 🪟 Windows (PowerShell)
+
+Use the provided build script:
+```powershell
+# Build using script
+.\scripts\build.ps1
+
+# Or compile manually
+g++ -std=c++17 -O3 -fopenmp -o build/parallel_counter.exe `
+    src/parallel/word_counter_parallel.cpp `
+    src/parallel/main.cpp
+
+# Run the program (optional second argument sets number of threads)
+.\build\parallel_counter.exe data\test_50mb.txt 8
+```
+
+#### 🐧/🍎 Linux / macOS (Bash)
+
+Use the provided build script:
+```bash
+# Make script executable (first time only)
+chmod +x scripts/build.sh
+
+# Build using script
+./scripts/build.sh
+
+# Or compile manually
+g++ -std=c++17 -O3 -fopenmp -o build/parallel_counter \
+    src/parallel/word_counter_parallel.cpp \
+    src/parallel/main.cpp
+
+# Run the program (optional second argument sets thread count)
+./build/parallel_counter data/test_50mb.txt 8
+
+# Or use the environment variable OMP_NUM_THREADS
+export OMP_NUM_THREADS=8
+./build/parallel_counter data/test_50mb.txt
+```
+
+Notes:
+- The second command-line argument (if supported) can override the number of OpenMP threads; otherwise use `OMP_NUM_THREADS`.
+- Use `-fopenmp` when compiling to enable OpenMP support.
 
 ### External Links
 - [OpenMP Documentation](https://www.openmp.org/specifications/)
