@@ -167,8 +167,9 @@ g++ -std=c++17 -O3 -fopenmp -o build/parallel_counter.exe `
     src/parallel/word_counter_parallel.cpp `
     src/parallel/main.cpp
 
-# Run the program (optional second argument sets number of threads)
-.\build\parallel_counter.exe data\test_50mb.txt 8
+# Run the program (optional fourth argument sets number of threads; optional fifth argument sets the synchronization mode)
+# Supported sync modes: reduction (default), atomic, critical
+.\build\parallel_counter.exe data\test_50mb.txt results\parallel\output.txt 100 8 reduction
 ```
 
 #### 🐧/🍎 Linux / macOS (Bash)
@@ -186,8 +187,9 @@ g++ -std=c++17 -O3 -fopenmp -o build/parallel_counter \
     src/parallel/word_counter_parallel.cpp \
     src/parallel/main.cpp
 
-# Run the program (optional second argument sets thread count)
-./build/parallel_counter data/test_50mb.txt 8
+# Run the program (optional fourth argument sets thread count; optional fifth argument sets the synchronization mode)
+# Supported sync modes: reduction (default), atomic, critical
+./build/parallel_counter data/test_50mb.txt results/parallel/output.txt 100 8 reduction
 
 # Or use the environment variable OMP_NUM_THREADS
 export OMP_NUM_THREADS=8

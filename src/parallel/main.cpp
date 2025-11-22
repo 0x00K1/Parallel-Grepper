@@ -8,6 +8,13 @@
  *
  * Usage: parallel_counter <input_file> [output_file] [top_n] [num_threads]
  */
+static WordCounterParallel::SyncMethod parseSyncMethod(const std::string& s) {
+    if (s == "critical") return WordCounterParallel::SyncMethod::Critical;
+    if (s == "atomic") return WordCounterParallel::SyncMethod::Atomic;
+    // default
+    return WordCounterParallel::SyncMethod::Reduction;
+}
+
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <input_file> [output_file] [top_n] [num_threads]\n";
@@ -19,6 +26,8 @@ int main(int argc, char* argv[]) {
     std::string outputFile = (argc > 2) ? argv[2] : "results/parallel/output.txt";
     int topN = (argc > 3) ? std::stoi(argv[3]) : 100;
     int numThreads = (argc > 4) ? std::stoi(argv[4]) : 0;
+    std::string syncModeStr = (argc > 5) ? argv[5] : "reduction";
+    auto mode = parseSyncMethod(syncModeStr);
 
     if (numThreads > 0) {
         omp_set_num_threads(numThreads);
@@ -31,10 +40,11 @@ int main(int argc, char* argv[]) {
     std::cout << "Output File: " << outputFile << "\n";
     std::cout << "Top N Words: " << topN << "\n";
     std::cout << "Threads: " << omp_get_max_threads() << "\n";
+    std::cout << "Sync Mode: " << syncModeStr << "\n";
     std::cout << "-------------------------------------------\n";
 
     // Create word counter instance
-    WordCounterParallel counter;
+    WordCounterParallel counter(mode);
 
     // Process file
     std::cout << "Processing file...\n";

@@ -8,8 +8,8 @@
 #include <omp.h>
 #include <sstream>
 
-WordCounterParallel::WordCounterParallel()
-    : executionTime(0.0), totalWords(0), uniqueWords(0) {}
+WordCounterParallel::WordCounterParallel(SyncMethod mode)
+    : executionTime(0.0), totalWords(0), uniqueWords(0), syncMethod(mode) {}
 
 std::string WordCounterParallel::normalizeWord(const std::string& word) {
     std::string normalized;
@@ -141,6 +141,7 @@ WordCounterParallel::buildWordMapFromList(const std::vector<std::string>& rawWor
 
     unsigned long long totalWordCount = 0;
 
+    if (syncMethod == SyncMethod::Reduction) {
 #pragma omp parallel reduction(+ : totalWordCount)
     {
         WordMap localMap;
@@ -150,7 +151,37 @@ WordCounterParallel::buildWordMapFromList(const std::vector<std::string>& rawWor
             std::string normalized = normalizeWord(rawWords[static_cast<size_t>(i)]);
             if (!normalized.empty()) {
                 localMap[normalized]++;
+                // Update per-method: reduction aggregates this increment, atomic uses atomic, critical uses critical section
                 totalWordCount++;
+            }
+        }
+
+#pragma omp critical
+        {
+            for (const auto& entry : localMap) {
+                // Merge: wordFreq is shared; merging must be synchronized to avoid data races on unordered_map
+                wordFreq[entry.first] += entry.second;
+            }
+        }
+    }
+    }
+    else {
+#pragma omp parallel
+    {
+        WordMap localMap;
+
+#pragma omp for schedule(static)
+        for (int i = 0; i < static_cast<int>(rawWords.size()); ++i) {
+            std::string normalized = normalizeWord(rawWords[static_cast<size_t>(i)]);
+            if (!normalized.empty()) {
+                localMap[normalized]++;
+                if (syncMethod == SyncMethod::Atomic) {
+#pragma omp atomic
+                    totalWordCount++;
+                } else { // Critical
+#pragma omp critical
+                    totalWordCount++;
+                }
             }
         }
 
@@ -160,6 +191,7 @@ WordCounterParallel::buildWordMapFromList(const std::vector<std::string>& rawWor
                 wordFreq[entry.first] += entry.second;
             }
         }
+    }
     }
 
     // Aggregation happens serially because std::unordered_map is not thread-safe.
