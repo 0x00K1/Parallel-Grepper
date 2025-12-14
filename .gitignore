@@ -47,7 +47,6 @@ Thumbs.db
 *.log
 *.out
 *.toc
-*.pdf
 *.synctex.gz
 
 # Results

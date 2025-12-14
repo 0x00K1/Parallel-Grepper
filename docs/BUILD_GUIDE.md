@@ -94,6 +94,12 @@ ln -s /usr/local/bin/gcc-13 /usr/local/bin/g++
 ```
 
 ---
+### Generate test datasets
+
+```bash
+pip install -r benchmarks/requirements.txt
+python benchmarks/generate_dataset.py
+```
 
 ## Building Sequential Version
 
@@ -130,25 +136,6 @@ g++ -std=c++17 -O3 -o build/sequential_counter \
 
 # Run the program
 ./build/sequential_counter data/test_10mb.txt
-```
-
-### Generate test datasets
-
-```bash
-pip install -r benchmarks/requirements.txt
-python benchmarks/generate_dataset.py
-```
-
-### Running Benchmarks
-
-```bash
-python benchmarks/run_benchmarks.py
-```
-
-### Analyze Results
-
-```bash
-python benchmarks/analyze_results.py
 ```
 
 ---

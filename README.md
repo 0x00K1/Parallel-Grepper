@@ -1,16 +1,18 @@
-# Parallel Text Processing and Word Frequency Counter
+<h1 align="center">Parallel-Grepper</h1>
+
+<p align="center">
+  <strong>Parallel Text Processing and Word Frequency Counter</strong>
+</p>
 
 ## 🎯 Project Overview
 
 This project implements a parallel word frequency counter using OpenMP to demonstrate performance improvements in large-scale text processing. We compare sequential and parallel implementations across various dataset sizes and thread configurations.
 
----
-
 ## 📁 Project Structure
 
 ```
 parallel-grepper/
-├── docs/                          # Documentation and proposal
+├── docs/                         # Documentation and proposal
 ├── src/
 │   ├── sequential/               # Sequential implementation
 │   └── parallel/                 # Parallel implementation (OpenMP)
@@ -32,11 +34,12 @@ parallel-grepper/
 
 ### [Building Sequential Version](docs/BUILD_GUIDE.md#building-sequential-version)
 
----
-
 ### [Building Parallel Version](docs/BUILD_GUIDE.md#building-parallel-version) 
 
----
+## 📖 Documentation
+
+**Complete project documentation:**  
+**[`docs/Group3@IAU-ARTI503.pdf`](docs/Group3@IAU-ARTI503.pdf)**
 
 ## 📄 License
 
