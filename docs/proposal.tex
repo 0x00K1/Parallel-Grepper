@@ -1880,10 +1880,10 @@ parallel-grepper/
             word_counter_parallel.cpp
             word_counter_parallel.h
     benchmarks/
-        run_sequential_benchmarks.py  # Sequential benchmarks
-        run_parallel_benchmarks.py    # Parallel benchmarks
-        analyze_sequential_results.py # Visualization & analysis
-        analyze_parallel_results.py   # Visualization & analysis
+        F-run_sequential_benchmarks.py  # Sequential benchmarks
+        F-run_parallel_benchmarks.py    # Parallel benchmarks
+        F-analyze_sequential_results.py # Visualization & analysis
+        F-analyze_parallel_results.py   # Visualization & analysis
         generate_dataset.py           # Test data generation
         results/                      # Benchmark outputs (CSV/JSON/PNG)
     scripts/
@@ -1895,10 +1895,7 @@ parallel-grepper/
         BUILD_GUIDE.md              # Compilation instructions
         RACE_CONDITION_FIXES.md     # Synchronization method details
     data/                           # Test datasets
-        test_10mb.txt
-        test_25mb.txt
-        test_50mb.txt
-        test_100mb.txt
+        # Generated text files (10MB - 100MB+) from generate_dataset.py
     results/
         sequential/                 # Sequential outputs
         parallel/                   # Parallel outputs
@@ -2063,7 +2060,7 @@ This project was completed as part of the \textbf{Parallel Computer Architecture
 \vspace{0.3cm}
 \noindent\textbf{Course Details:}
 \begin{itemize}[itemsep=2pt]
-    \item Fourth Year, Semester 1, Academic Year 2024-2025
+    \item Fourth Year, Semester 1, Academic Year 2025-2026
     \item Instructor: Dr. Yasir Alguwaifli
     \item Project: Parallel Word Frequency Counter
     \item Framework: OpenMP 5.x for shared-memory parallelization
