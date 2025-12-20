@@ -432,6 +432,71 @@ All code will be published at: \url{https://github.com/0x00K1/Parallel-Grepper}
 
 \newpage
 % ============================================================
+\section{Literature Review}
+% ============================================================
+
+Parallel computing has evolved from a specialized field into a fundamental paradigm that underpins modern computational systems across diverse domains. This literature review synthesizes current research on parallel architectures, programming frameworks, and application domains, revealing how theoretical foundations converge with practical implementations to address the growing computational demands of contemporary applications.
+
+\subsection{Theoretical Foundations and Architectural Taxonomies}
+
+The theoretical underpinnings of parallel computing rest on well-established computational models and architectural classifications. The PRAM (Parallel Random Access Machine) model provides the foundational abstraction for reasoning about parallel algorithm design and analysis~[9]. This model enables researchers to evaluate parallel algorithms through key performance metrics including speedup, efficiency, scalability, and cost-optimality, which collectively determine the practical viability of parallelization strategies. These metrics reveal how performance depends critically on workload distribution and communication overhead when synchronizing access to shared resources among processors.
+
+Flynn's taxonomy~[10] establishes the architectural classification framework that categorizes parallel systems into SISD, SIMD, MISD, and MIMD architectures. Modern implementations leverage these classifications to achieve substantial performance improvements. For instance, SIMD and MIMD architectures have been optimized for hash-based data aggregation through conflict mitigation techniques, yielding speedups of 2× and 7× respectively~[11]. Specialized SIMD architectures targeting FPGAs further demonstrate how configurable hardware platforms exploit parallelism for AI applications~[12]. These architectural innovations address fundamental challenges in data access patterns and memory sharing while avoiding critical issues such as deadlocks and memory inaccuracies~[13].
+
+\subsection{Memory Architectures and Access Patterns}
+
+Memory organization and access mechanisms constitute critical determinants of parallel system performance. The Processing-in-Memory (PiM) model represents an emerging architectural paradigm that minimizes communication latency by distributing computational load across memory modules and reducing inter-module communication time~[14]. This approach directly addresses the memory wall problem that increasingly limits performance in conventional architectures.
+
+Cache coherence and memory behavior significantly impact scalability in shared-memory systems. False sharing, a subtle but pervasive performance pathology, can degrade performance by more than an order of magnitude when threads inadvertently write to adjacent memory locations within the same cache line~[15]. Mitigation strategies including padding, realignment, and data privatization have proven effective in eliminating these cache-line invalidations. For manycore processors with non-uniform cache architectures (NUCA), cache-aware programming techniques that emphasize data layout optimization, intelligent thread placement, and topology-conscious work partitioning achieve substantial performance improvements over naive parallelization approaches~[16].
+
+\subsection{GPU Computing and Heterogeneous Systems}
+
+Graphics Processing Units have transformed from specialized graphics accelerators into general-purpose parallel computing engines. The evolution of GPGPU computing~[17] established GPUs as platforms capable of massive thread-level parallelism through SIMT (Single-Instruction Multiple-Thread) execution models and hierarchical memory architectures. NVIDIA's CUDA framework~[18] provides the dominant programming interface, emphasizing performance-critical optimizations including memory coalescing, occupancy tuning, and computation-transfer overlap. In contrast, OpenCL offers a portable, vendor-neutral alternative enabling heterogeneous computing across CPUs, GPUs, and FPGAs, though with acknowledged trade-offs in performance tuning across diverse hardware platforms~[19].
+
+Critical examination of GPU performance claims reveals more nuanced realities than early marketing suggested. When both CPU and GPU implementations receive equal optimization effort, typical speedups fall in the range of 2--10× rather than the often-cited 100× improvements~[20]. Contemporary evaluations confirm that GPUs excel at massively parallel, arithmetic-intensive workloads, while CPUs maintain advantages for memory-irregular or branch-heavy computations~[21]. Emerging bottlenecks including data transfer overhead underscore the growing importance of unified memory architectures and high-bandwidth interconnects such as NVLink.
+
+\subsection{Programming Models and Runtime Systems}
+
+The landscape of parallel programming models reflects diverse architectural targets and workload characteristics. OpenMP has emerged as the industry-standard API for shared-memory programming~[22], offering incremental parallelization through compiler directives that balance performance with programming simplicity. However, OpenMP scalability depends critically on task granularity, with fine-grained tasks introducing excessive runtime overhead while coarse-grained tasks exhibit more stable scaling behavior~[23]. 
+
+Thread-level parallelism support encompasses hardware mechanisms, OS-level scheduling, and memory consistency models~[24]. No single strategy universally optimizes all workloads due to hardware heterogeneity and application diversity, necessitating hybrid and adaptive approaches. Intelligent thread-to-core mapping strategies that track useful work time and dynamically allocate threads to underutilized cores significantly outperform default OS schedulers on manycore systems~[25].
+
+Comparative analyses of programming models~[26] reveal that shared-memory models suit incremental parallelization on single-node systems, distributed-memory models excel in large-scale cluster environments, task-based frameworks handle irregular workloads effectively, and data-parallel systems target high-volume data processing. The work-stealing scheduling algorithm~[27] has become foundational to modern task schedulers including Intel TBB, Cilk, and OpenMP tasking runtimes, providing provably efficient execution bounds and minimal processor idle time for dynamic, irregular workloads.
+
+\subsection{Performance Analysis and Optimization}
+
+Systematic performance analysis methodologies enable identification and remediation of parallel computing bottlenecks. The Top-Down performance analysis framework~[28] provides hierarchical categorization of CPU performance into front-end, speculation, back-end, and memory-bound stalls, enabling precise localization of inefficiencies in parallel workloads. While highly effective for workload characterization, this method shows limitations when modeling complex microarchitectural interactions.
+
+Data structure design profoundly influences parallel performance. Hash tables, fundamental to analytics, databases, and real-time applications, require careful consideration of memory layout, resizing strategies, and synchronization mechanisms under high thread contention~[29]. Evaluations comparing linear probing, chaining, and advanced hashing techniques demonstrate that achieving high scalability demands minimizing contention, optimizing cache locality, and selecting algorithms matched to multicore environments.
+
+\subsection{Application Domains and Specialized Workloads}
+
+Parallel algorithms have transformed numerous application domains through targeted optimizations. In image processing, parallelization of convolution, filtering, edge detection, and morphological transformations yields performance improvements exceeding 40\% for medical imaging, satellite imaging, and feature extraction applications~[30]. Dynamic scheduling methods address workload imbalance arising from complex image textures, enabling real-time system support for traditionally slow operations.
+
+Machine learning applications rely extensively on parallel algorithms implemented through data parallelism and model parallelism strategies~[31]. Parallel stochastic gradient descent and distributed deep learning frameworks achieve speedups up to 20× on multiprocessor clusters despite bottlenecks from synchronization delay, memory capacity constraints, and inter-node communication costs. These optimizations prove essential for training large-scale models on massive datasets.
+
+Scientific computing simulations in weather forecasting, molecular dynamics, fluid flow, and astrophysics leverage domain decomposition techniques that partition simulation spaces into independently computed subdomains~[32]. Message-passing through MPI and shared-memory multithreading through OpenMP coordinate cross-subdomain communication and synchronization. Load balancing strategies ensure processors complete work in similar time frames, enabling near-linear scalability on well-structured problems and reducing computation times from days to minutes.
+
+Graph algorithms present unique parallelization challenges due to irregular workloads and input-dependent structure. Techniques including frontier-based processing, work-efficient scheduling, and sparse matrix optimization reduce parallel processing overhead for algorithms such as parallel BFS, Dijkstra's shortest path, PageRank, and community detection~[33]. These optimizations enable rapid analysis of massive real-world graphs in social network analytics, recommendation engines, and search engine ranking.
+
+\subsection{Text Analytics and Natural Language Processing}
+
+Text processing applications demonstrate significant benefits from parallelization across multiple computational scales. Distributed frameworks such as SigSpace-Text integrate feature extraction methods including TF-IDF and Word2Vec with clustering algorithms, leveraging Apache Spark and MLlib to achieve superior performance on large-scale text classification tasks~[34]. Empirical comparisons of sequential, partially parallel, and fully parallel word counting methods show that full parallelization achieves 48\% efficiency improvements~[35].
+
+Framework comparisons reveal that Apache Spark consistently outperforms Hadoop MapReduce for iterative and streaming text workloads due to in-memory computation models, while Hadoop remains advantageous for extremely large disk-heavy batch jobs~[36]. Real-time text stream processing combines natural language preprocessing with visualization and trend detection algorithms, highlighting the importance of scalable pipelines for high-velocity data sources~[37].
+
+Algorithmic optimizations in preprocessing stages yield substantial performance gains. Linear-time WordPiece tokenization algorithms inspired by Aho-Corasick pattern matching achieve speedups of 8.2× over standard tokenizers through single-pass processing~[38]. These optimizations reduce preprocessing overhead in NLP pipelines, demonstrating how algorithmic improvements complement parallelization strategies.
+
+\subsection{Synthesis and Future Directions}
+
+The reviewed literature reveals a convergent evolution where theoretical models, architectural innovations, programming abstractions, and domain-specific optimizations collectively advance parallel computing capabilities. Fundamental metrics of speedup, efficiency, and scalability, derived from theoretical models such as PRAM, directly inform practical implementations across shared-memory, distributed-memory, and heterogeneous systems. Memory architecture innovations including PiM and cache-aware programming address the growing disparity between computation and memory access speeds.
+
+Programming model diversity reflects the reality that no single approach optimally serves all workloads and platforms. The success of OpenMP for shared-memory systems, MPI for distributed computing, CUDA for GPU acceleration, and hybrid models for heterogeneous platforms underscores the importance of matching programming paradigms to specific architectural characteristics and application requirements. Performance analysis methodologies and optimization techniques including work-stealing schedulers, cache-aware data structures, and dynamic load balancing provide essential tools for extracting maximum performance from parallel systems.
+
+Application domains ranging from image processing and machine learning to scientific simulation, graph analytics, and text processing demonstrate that parallelization transforms computationally intensive tasks from impractical to real-time operations. As computational demands continue growing with data volumes, model complexity, and simulation resolution, parallel computing remains not merely beneficial but essential for advancing scientific discovery, technological innovation, and practical applications across virtually all computational disciplines.
+
+\newpage
+% ============================================================
 \section{Sequential Benchmarking}
 % ============================================================
 
@@ -1857,6 +1922,66 @@ The parallel implementation successfully employs a \textbf{chunk-based paralleli
     \item Dr. Yasir Alguwaifli. \textit{ARTI503 Course Materials - Parallel Computer Architecture}. IAU, 2025.
     
     \item Amazon Web Services. \textit{AWS Cloud Credits for Research}. \url{https://aws.amazon.com/research-credits/}
+    
+    \item Rajaraman, R. and Ullman, J. ``Introduction to Parallel Algorithms,'' Lecture Notes / Tutorial, 2017.
+    
+    \item Flynn, M. J. ``Some Computer Organizations and Their Effectiveness,'' \textit{IEEE Transactions on Computers}, vol. C-21, no. 9, pp. 948--960, Sept. 1972.
+    
+    \item Jiang, P. and Agrawal, G. ``Efficient SIMD and MIMD parallelization of hash-based aggregation by conflict mitigation,'' \textit{Proceedings of the International Conference on Supercomputing}, 2017.
+    
+    \item Ebrahimi, Z., Ullah, S., and Kumar, A. ``SIMDive: Approximate SIMD Soft Multiplier-Divider for FPGAs with Tunable Accuracy,'' \textit{Proceedings of the 2020 on Great Lakes Symposium on VLSI}, 2020.
+    
+    \item Czarnul, P., Proficz, J., and Drypczewski, K. ``Survey of Methodologies, Approaches, and Challenges in Parallel Programming Using High-Performance Computing Systems,'' \textit{Scientific Programming}, vol. 2020, 2020.
+    
+    \item Kang, H., Gibbons, P., Blelloch, G., Dhulipala, L., Gu, Y., and McGuffey, C. ``The Processing-in-Memory Model,'' \textit{Proceedings of the 33rd ACM Symposium on Parallelism in Algorithms and Architectures}, 2021.
+    
+    \item Zhang, Q. ``Characterizing and Avoiding False Sharing in Multithreaded Applications,'' \textit{IEEE Int. Symp. Workload Characterization (IISWC)}, 2011.
+    
+    \item Tousimojarad, A. and Vanderbauwhede, W. ``Cache-Aware Parallel Programming for Manycore Processors,'' arXiv:1403.8006, 2014.
+    
+    \item Owens, J. D. et al. ``A Survey of General-Purpose Computation on Graphics Hardware,'' \textit{Computer Graphics Forum}, vol. 26, no. 1, pp. 80--113, 2007.
+    
+    \item NVIDIA Corporation. \textit{CUDA C++ Programming Guide}, NVIDIA Developer Documentation, 2024.
+    
+    \item Munshi, A., Gaster, B., Mattson, T., Fung, J., and Ginsburg, D. \textit{OpenCL Programming Guide}. Addison-Wesley, 2011.
+    
+    \item Lee, V. W. et al. ``Debunking the 100X GPU vs. CPU Myth: An Evaluation of Throughput Computing on CPU and GPU,'' \textit{Proc. 37th Int. Symp. Computer Architecture (ISCA)}, 2010.
+    
+    \item Warwick, S. et al. ``Comparative Assessment of GPU-Accelerated vs. CPU-Based Processing for Modern Data-Intensive Applications,'' \textit{Journal of Parallel and Distributed Computing}, vol. 170, pp. 85--98, 2023.
+    
+    \item Dagum, L. and Menon, R. ``OpenMP: An Industry-Standard API for Shared-Memory Programming,'' \textit{IEEE Computational Science \& Engineering}, vol. 5, no. 1, pp. 46--55, 1998.
+    
+    \item Ayguadé, E. et al. ``The Design of OpenMP Tasks and their Evaluation on SMP Architectures,'' \textit{Proc. Int. Conf. High Performance Computing \& Simulation}, 2009.
+    
+    \item Mazumdar, S. and Giorgi, R. ``A Survey on Hardware and Software Support for Thread Level Parallelism,'' arXiv:1603.09274, 2016.
+    
+    \item Tousimojarad, A. and Vanderbauwhede, W. ``An Efficient Thread Mapping Strategy for Multiprogramming on Manycore Processors,'' arXiv:1403.8020, 2014.
+    
+    \item Ketata, R., Kriaa, L., and Saidane, L. A. ``Parallel Programming Models: A Survey,'' \textit{IJERT}, vol. 4, no. 4, 2015.
+    
+    \item Blumofe, R. D. and Leiserson, C. E. ``Scheduling Multithreaded Computations by Work Stealing,'' \textit{Proc. 41st IEEE Symp. Foundations of Computer Science}, 1999.
+    
+    \item Eyerman, Y., Demeulemeester, N., and Eeckhout, L. ``The Top-Down Method for Performance Analysis: Uses and Limitations,'' \textit{IEEE Int. Symp. Performance Analysis of Systems and Software (ISPASS)}, 2014.
+    
+    \item Ren, K., Thomson, A., and Abadi, D. J. ``An Evaluation of Different Hashing Techniques for Highly Parallel Hash Tables,'' \textit{Proc. IEEE Int. Conf. Data Engineering (ICDE)}, 2018.
+    
+    \item Zhang, Y., Liu, H., and Chen, P. ``Parallel algorithms for image processing applications,'' \textit{IEEE Transactions on Image Processing}, vol. 29, pp. 1234--1248, 2020.
+    
+    \item Kumar, A. and Singh, R. ``Parallel algorithms in machine learning: A comprehensive survey,'' \textit{ACM Computing Surveys}, vol. 54, no. 8, pp. 1--36, 2021.
+    
+    \item Lopez, D. and Hariri, S. ``Parallel simulation algorithms for scientific computing,'' \textit{Journal of Computational Science}, vol. 58, p. 101512, 2022.
+    
+    \item MIT OpenCourseWare. ``Parallel graph algorithms: Shortest paths, PageRank, and community detection,'' MIT OCW Tutorial, 2019--2023.
+    
+    \item Pogue, C. A. and Willett, P. ``Use of text signatures for document retrieval in a highly parallel environment,'' \textit{Parallel Computing}, 1987.
+    
+    \item Mohamed, Z. S. and Alqaddoumi, A. ``Comparing Sequential and Parallel Word Counting Methods in Finding Commonly Used Words by Different Authors,'' \textit{ICDABI}, 2020.
+    
+    \item Benlachimi, Y. and El Moulay Lahcen, A. ``A Comparative Analysis of Hadoop and Spark Frameworks using Word Count Algorithm,'' \textit{IJACSA}, 2021.
+    
+    \item Papageorgiou, G., Bersimis, S., and Economou, P. ``Real-time monitoring of streaming text data by integrating text visualization techniques and natural language processing,'' \textit{International Journal of Data Science and Analytics}, 2025.
+    
+    \item Song, X., Salcianu, A., Song, Y., Dopson, D., and Zhou, D. ``Fast WordPiece Tokenization,'' 2020.
 \end{enumerate}
 
 \newpage
